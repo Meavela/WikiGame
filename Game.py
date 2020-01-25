@@ -8,6 +8,7 @@ from kivy.uix.textinput import TextInput
 from WikiGame import Proccessus
 from kivy.uix.image import Image
 from kivy.core.window import Window
+from kivy.clock import Clock
 
 class MainScreen(GridLayout,Proccessus):
 
@@ -20,13 +21,39 @@ class MainScreen(GridLayout,Proccessus):
 
         self.bind(size=self._update_rect, pos=self._update_rect)
 
+    
+    def Defeat(self,dt):
+        Widget.clear_widgets(self)
+        self.cols = 1
+        self.add_widget(Label(text='Vous avez perdu ! Vous avez effectué {} tours en 10 minutes !'.format(self.tour), font_size='60sp', bold=True))
+        self.add_widget(Label(text='Historique : ', font_size='40sp', bold=True))
+        for index in range(0,len(self.lastPage)):
+            self.add_widget(Label(text='- Tour n°{} : {}'.format(index+1, self.lastPage[index][1]), font_size='20sp', bold=True))
+        self.Footer()
+
+    
+    def Timer(self, dt):
+        minutes = self.timer[0]
+        secondes = self.timer[1]
+        secondes += 1
+
+        if secondes == 60:
+            secondes = 0
+            minutes += 1
+        
+        self.timer = (minutes, secondes)
+        
+        for child in self.children:
+            if "Temps de jeu" in child.text:
+                child.text = 'Temps de jeu : {} min {} sec'.format(self.timer[0], self.timer[1])
+
     def _update_rect(self, instance, value):
         self.rect.pos = instance.pos
         self.rect.size = instance.size
 
     def StartGame(self):
         self.cols = 5
-
+        self.timer = (0,0)
         self.page = 1
         self.tour = 1
         error = True
@@ -42,9 +69,12 @@ class MainScreen(GridLayout,Proccessus):
                 self.Recharge()
 
                 error = False
+                Clock.schedule_once(self.Defeat, 600)
+                Clock.schedule_interval(self.Timer, 1)
             except UnicodeEncodeError:
                 print("Oups ! Il y a eu un problème dans le choix des pages ! Je ré-essaye...")
                 error = True
+
 
     def Footer(self):
         echap = Label(text='Cliquez sur "Echap" pour sortir du jeu...', italic=True)
@@ -68,6 +98,13 @@ class MainScreen(GridLayout,Proccessus):
         buttonRestart = Button(text='Recommencer')
         buttonRestart.bind(on_press=self.Restart)
         self.add_widget(buttonRestart)
+        self.add_widget(Label(text=''))
+        self.add_widget(Label(text=''))
+
+        self.add_widget(Label(text=''))
+        self.add_widget(Label(text=''))
+        tempsDeJeu = Label(text='Temps de jeu : {} min {} sec'.format(self.timer[0], self.timer[1]))
+        self.add_widget(tempsDeJeu)
         self.add_widget(Label(text=''))
         self.add_widget(Label(text=''))
 
@@ -122,13 +159,14 @@ class MainScreen(GridLayout,Proccessus):
             self.tour += 1
             self.Recharge()
     
+    
     def Victory(self):
         Widget.clear_widgets(self)
         self.cols = 1
         self.add_widget(Label(text='Victoire en {} tours !'.format(self.tour), font_size='60sp', bold=True))
         self.add_widget(Label(text='Historique : ', font_size='40sp', bold=True))
         for index in range(0,len(self.lastPage)):
-            self.add_widget(Label(text='- Tour n°{} : {}'.format(index+1, self.lastPage[index]), font_size='20sp', bold=True))
+            self.add_widget(Label(text='- Tour n°{} : {}'.format(index+1, self.lastPage[index][1]), font_size='20sp', bold=True))
         self.Footer()
 
     def RetourPress(self, instance):
