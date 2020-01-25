@@ -72,14 +72,14 @@ class MainScreen(GridLayout,Proccessus):
         self.add_widget(Label(text=''))
 
         self.add_widget(Label(text=''))
-        self.add_widget(Label(text='Départ : '+self.pageDepart[1], bold=True))
+        self.add_widget(Label(text='Départ : '+self.pageDepart[1], font_size='18sp', bold=True, underline=True))
         self.add_widget(Label(text=''))
-        self.add_widget(Label(text='Cible : '+self.pageCible[1], bold=True))
+        self.add_widget(Label(text='Cible : '+self.pageCible[1], font_size='18sp', bold=True, underline=True))
         self.add_widget(Label(text=''))
 
         self.add_widget(Label(text=''))
         self.add_widget(Label(text=''))
-        self.add_widget(Label(text='Actuelle : '+self.pageActuelle[1], bold=True))
+        self.add_widget(Label(text='Actuelle : '+self.pageActuelle[1], font_size='18sp', bold=True, underline=True))
         self.add_widget(Label(text=''))
         self.add_widget(Label(text=''))
 
