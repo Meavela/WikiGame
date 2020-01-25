@@ -7,6 +7,7 @@ import urllib.request
 import re
 import string
 import os
+import requests
 
 
 class Proccessus():
@@ -14,7 +15,10 @@ class Proccessus():
         super().__init__()
 
     def ChooseRandomPage(self):
-        req = urllib.request.Request(url="https://fr.wikipedia.org/wiki/Special:Page_au_hasard",
+        data = requests.request("GET", "https://fr.wikipedia.org/wiki/Special:Page_au_hasard")
+        url = data.url
+
+        req = urllib.request.Request(url=url,
                                     headers={'User-Agent': ' Mozilla/5.0 (Windows NT 6.1; WOW64; rv:12.0) Gecko/20100101 Firefox/12.0'})
 
         handler = urllib.request.urlopen(req)
@@ -26,7 +30,10 @@ class Proccessus():
 
         result = self.Replace(result)
 
-        return result
+        href = url.split("/")[4]
+        title = result
+
+        return (href,result)
 
     def GetUrl(self,pageActuelle):
         req = urllib.request.Request(url="https://fr.wikipedia.org/wiki/"+pageActuelle,
@@ -57,7 +64,6 @@ class Proccessus():
         for anchor in soup.find_all(True, {"id":["toc","mw-navigation","mw-page-base","mw-head-base","footer"]}):
             anchor.decompose()
         
-        # print(soup)
         return soup
 
     def FindAllLinks(self,soup):
@@ -71,9 +77,13 @@ class Proccessus():
                     if y == None:
                         if "<img" not in str(anchor):
                             if anchor.contents:
-                                z = re.findall('href="\/wiki\/(.{1,100})" title="(.{1,100})">', str(anchor))
-                                if len(z) != 0:
-                                    if z[0] not in my_list:
-                                        my_list.append(z[0])
+                                # Récupérer le href
+                                href = anchor.get('href').replace('/wiki/','')
+                                # Récupérer le content
+                                title = anchor.get('title')
+
+                                if title not in my_list:
+                                    my_list.append((href,title))
+                                
         
         return my_list
