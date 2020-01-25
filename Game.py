@@ -15,6 +15,7 @@ class MainScreen(GridLayout,Proccessus):
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         self.StartGame()
+        Clock.schedule_interval(self.Timer, 1)
 
         with self.canvas.before:
             self.rect = Rectangle(size=self.size, pos=self.pos, source='1.jpg')
@@ -25,7 +26,8 @@ class MainScreen(GridLayout,Proccessus):
     def Defeat(self,dt):
         Widget.clear_widgets(self)
         self.cols = 1
-        self.add_widget(Label(text='Vous avez perdu ! Vous avez effectué {} tours en 10 minutes !'.format(self.tour), font_size='60sp', bold=True))
+        self.add_widget(Label(text='Vous avez perdu !', font_size='60sp', bold=True))
+        self.add_widget(Label(text='Vous avez effectué {} tours en 10 minutes !'.format(self.tour), font_size='60sp', bold=True))
         self.add_widget(Label(text='Historique : ', font_size='40sp', bold=True))
         for index in range(0,len(self.lastPage)):
             self.add_widget(Label(text='- Tour n°{} : {}'.format(index+1, self.lastPage[index][1]), font_size='20sp', bold=True))
@@ -44,7 +46,7 @@ class MainScreen(GridLayout,Proccessus):
         self.timer = (minutes, secondes)
         
         for child in self.children:
-            if "Temps de jeu" in child.text:
+            if "Temps de jeu : " in child.text:
                 child.text = 'Temps de jeu : {} min {} sec'.format(self.timer[0], self.timer[1])
 
     def _update_rect(self, instance, value):
@@ -69,8 +71,7 @@ class MainScreen(GridLayout,Proccessus):
                 self.Recharge()
 
                 error = False
-                Clock.schedule_once(self.Defeat, 600)
-                Clock.schedule_interval(self.Timer, 1)
+                Clock.schedule_once(self.Defeat, 605)
             except UnicodeEncodeError:
                 print("Oups ! Il y a eu un problème dans le choix des pages ! Je ré-essaye...")
                 error = True
@@ -103,7 +104,7 @@ class MainScreen(GridLayout,Proccessus):
 
         self.add_widget(Label(text=''))
         self.add_widget(Label(text=''))
-        tempsDeJeu = Label(text='Temps de jeu : {} min {} sec'.format(self.timer[0], self.timer[1]))
+        tempsDeJeu = Label(text='Temps de jeu : {} min {} sec'.format(self.timer[0], self.timer[1]), bold=True)
         self.add_widget(tempsDeJeu)
         self.add_widget(Label(text=''))
         self.add_widget(Label(text=''))
@@ -163,7 +164,7 @@ class MainScreen(GridLayout,Proccessus):
     def Victory(self):
         Widget.clear_widgets(self)
         self.cols = 1
-        self.add_widget(Label(text='Victoire en {} tours !'.format(self.tour), font_size='60sp', bold=True))
+        self.add_widget(Label(text='Victoire en {} tours et en {} min {} sec !'.format(self.tour, self.timer[0], self.timer[1]), font_size='60sp', bold=True))
         self.add_widget(Label(text='Historique : ', font_size='40sp', bold=True))
         for index in range(0,len(self.lastPage)):
             self.add_widget(Label(text='- Tour n°{} : {}'.format(index+1, self.lastPage[index][1]), font_size='20sp', bold=True))
