@@ -67,18 +67,22 @@ class MainScreen(GridLayout,Proccessus):
         self.page = 1
         self.tour = 1
         error = True
+        # vérifie si il n'y a pas d'erreur d'encodage
         while error:
             self.lastPage = []
             try:
+                # récupère les pages
                 self.pageDepart = Proccessus.ChooseRandomPage(self)
                 self.pageCible = Proccessus.ChooseRandomPage(self)
                 self.pageActuelle = self.pageDepart
 
                 self.lastPage.append(self.pageActuelle)
 
+                # charge l'affichae
                 self.Recharge()
 
                 error = False
+                # ajoute le timer de défaite (10 minutes max)
                 Clock.schedule_once(self.Defeat, 605)
             except UnicodeEncodeError:
                 print("Oups ! Il y a eu un problème dans le choix des pages ! Je ré-essaye...")
@@ -140,9 +144,13 @@ class MainScreen(GridLayout,Proccessus):
         # relance le jeu
         self.StartGame()
 
+    # affichage les boutons des urls
     def ButtonList(self):
+        # récupération urls
         self.myList = Proccessus.GetUrl(self, self.pageActuelle[0].replace(' ','_'))
         self.ButtonRetour()
+
+        # récupère 20 urls ou moins en fonction
         if len(self.myList) < 20:
             mini = 0
             maxi = len(self.myList)
@@ -152,17 +160,23 @@ class MainScreen(GridLayout,Proccessus):
                 maxi = len(self.myList)
             else:
                 maxi = self.page*20
+
+        # pour chaque urls
         for target in range(mini,maxi):
             number = target+1
+            # crée un bouton
             if number < 10:
                 button = Button(text="0{} : {}".format(number,self.myList[target][1]))
             else:
                 button = Button(text="{} : {}".format(number,self.myList[target][1]))
-
+            # chaque bouton peut déclencher la fonction ButtonPress
             button.bind(on_press=self.ButtonPress)
             self.add_widget(button)
         
+        # si jamais il n'y a pas 20 urls
         self.RetourChariot(20-maxi)
+
+        # affiche les boutons de navigation
         self.ButtonsNavigation()
 
     def ButtonPress(self, instance):
