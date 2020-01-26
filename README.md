@@ -13,3 +13,7 @@
 ### Installation BeatifulSoup
 
 * https://code.tutsplus.com/fr/tutorials/scraping-webpages-in-python-with-beautiful-soup-the-basics--cms-28211
+
+## Pour lancer le jeu
+
+``` python Game.py ```
