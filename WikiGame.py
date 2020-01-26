@@ -10,6 +10,7 @@ class Proccessus():
     def __init__(self):
         super().__init__()
 
+    # récupère une page aléatoire
     def ChooseRandomPage(self):
         data = requests.request("GET", "https://fr.wikipedia.org/wiki/Special:Page_au_hasard")
         url = data.url
@@ -31,6 +32,7 @@ class Proccessus():
 
         return (href,result)
 
+    # récupère toutes les urls
     def GetUrl(self,pageActuelle):
         req = urllib.request.Request(url="https://fr.wikipedia.org/wiki/"+pageActuelle,
                                     headers={'User-Agent': ' Mozilla/5.0 (Windows NT 6.1; WOW64; rv:12.0) Gecko/20100101 Firefox/12.0'})
@@ -43,6 +45,7 @@ class Proccessus():
 
         return my_list
 
+    # remplace le résultat
     def Replace(self,result):
         result = result.replace('<i>','')
         result = result.replace('</i>','')
@@ -54,6 +57,7 @@ class Proccessus():
 
         return result
 
+    # enlève les class et id non voulus
     def Decompose(self,soup):
         for anchor in soup.find_all(True, {"class":["infobox","infobox_v2","infobox_v3","mw-indicators mw-body-content"]}):
             anchor.decompose()
@@ -62,6 +66,7 @@ class Proccessus():
         
         return soup
 
+    # tri les liens non voulus
     def FindAllLinks(self,soup):
         my_list = []
 
