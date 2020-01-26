@@ -1,12 +1,8 @@
 # coding=utf-8
-from __future__ import print_function, unicode_literals
-from pprint import pprint
 from bs4 import BeautifulSoup
-from PyInquirer import prompt, print_json
 import urllib.request
 import re
 import string
-import os
 import requests
 
 
