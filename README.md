@@ -16,4 +16,6 @@
 
 ## Pour lancer le jeu
 
-``` python Game.py ```
+```bash
+python Game.py
+```
